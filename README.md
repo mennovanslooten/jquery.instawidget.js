@@ -4,7 +4,7 @@
 
 This jQuery plugin makes it possible to write self-initializing widgets: widgets that automatically initialize when the page is loaded and when they are added dynamically after the page is done loading. 
 
-This is important so I'll repeat it: you write the widget definition once and you're done. Any widgets that exist in the DOM during load time as well as widgets that are added dynamically through jQuery methods such as `$().html()`, `$().after()`, `$().insertBefore`, etc will be automatically initialized.
+This is important so I'll repeat it: you write the widget definition once and you're done. Any widgets that exist in the DOM during load time as well as widgets that are added dynamically through jQuery methods such as `$().html()`, `$().after()`, `$().insertBefore()`, etc will be automatically initialized.
 
 ## Example ##
 
