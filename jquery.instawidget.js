@@ -5,6 +5,25 @@
 	var _original_html = [];
 	var $doc = $(document);
 
+	var _subscribers = {};
+	function subscribe(subject, callback) {
+		if (!(subject in _subscribers)) {
+			_subscribers[subject] = [];
+		}
+
+		_subscribers[subject].push(callback);
+	}
+
+
+	function publish(subject, data) {
+		var callbacks = _subscribers[subject];
+		if (callbacks) {
+			$.each(callbacks, function(index, callback) {
+				callback(data);
+			});
+		}
+	}
+
 
 	/*
 		jQuery.instawidget(name, callback) calls callback() for every element on the page
@@ -50,6 +69,7 @@
 			var original_html = $elt[0].outerHTML;
 			var $root = callback($elt, options, data) || $elt;
 			$root.addClass('instawidget-root');
+
 		}
 
 		_widget_setup[selector] = setup;
@@ -103,6 +123,34 @@
 
 	$(function() {
 		rescan($doc);
+	});
+
+
+	$.instawidget('publish', function($elt, options, pubs) {
+		var pub_pairs = pubs.split(',');
+		$.each(pub_pairs, function(index, pub) {
+			var pub_pair = pub.split(':');
+			var pub_event = pub_pair[0];
+			var pub_subject = pub_pair[1];
+
+			$elt.on(pub_event, function(e) {
+				publish(pub_subject, $elt);
+			});
+		});
+	});
+
+
+	$.instawidget('subscribe', function($elt, options, subs) {
+		var sub_pairs = subs.split(',');
+		$.each(sub_pairs, function(index, sub) {
+			var sub_pair = sub.split(':');
+			var sub_event = sub_pair[1];
+			var sub_subject = sub_pair[0];
+
+			subscribe(sub_subject, function($publisher) {
+				$elt.trigger(sub_event, { $publisher: $publisher });
+			});
+		});
 	});
 
 })(jQuery);
